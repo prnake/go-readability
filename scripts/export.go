@@ -34,8 +34,14 @@ func return_safe_result(result string, outputId string) *C.char {
 
 //export parse
 func parse(htmlContent *C.char, pageURL *C.char) *C.char {
-
+	
 	outputId := uuid.New().String()
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Go-readability recovered from panic:", r)
+		}
+	}()
 
 	// Convert C strings to Go strings
 	htmlStr := C.GoString(htmlContent)
